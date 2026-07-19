@@ -1265,6 +1265,54 @@
             </div>
 
             <p style="margin-top: 24px; font-size: 12px; color: #888888; text-align: center;">Who will win the Golden Boot? Place your bets!</p>
+
+            <!-- Place Bet Button -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button id="placeBetBtn" style="background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%); color: #000000; border: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all 0.3s ease;">💰 Place Your Bet</button>
+            </div>
+
+            <!-- Bets List -->
+            <div style="margin-top: 40px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 20px; font-family: 'Space Grotesk', sans-serif;">📋 Bets Placed</h3>
+                <div id="betsList" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; overflow: hidden;">
+                    <div style="padding: 32px; text-align: center; color: #888888;">No bets placed yet. Be the first!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bet Modal -->
+        <div id="betModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+            <div style="background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;">
+                <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 24px; font-family: 'Space Grotesk', sans-serif;">Place Your Bet</h2>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">Your Name</label>
+                    <input id="betName" type="text" placeholder="Enter your name" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; font-family: 'Inter', sans-serif; box-sizing: border-box; font-size: 14px;">
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase;">Select Amount</label>
+                    <div style="display: flex; gap: 12px;">
+                        <label style="flex: 1;">
+                            <input type="radio" name="betAmount" value="100" style="cursor: pointer;">
+                            <span style="color: #ffffff; margin-left: 8px;">₹100</span>
+                        </label>
+                        <label style="flex: 1;">
+                            <input type="radio" name="betAmount" value="500" style="cursor: pointer;">
+                            <span style="color: #ffffff; margin-left: 8px;">₹500</span>
+                        </label>
+                        <label style="flex: 1;">
+                            <input type="radio" name="betAmount" value="1000" style="cursor: pointer;">
+                            <span style="color: #ffffff; margin-left: 8px;">₹1000</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button id="confirmBetBtn" style="flex: 1; background: #00d084; color: #000000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif;">Place Bet</button>
+                    <button id="closeBetModalBtn" style="flex: 1; background: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif;">Cancel</button>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -1380,7 +1428,86 @@
                     toggle.classList.add('collapsed');
                 }
             });
+
+            // Load and display bets
+            loadBets();
         });
+
+        // Golden Boot Betting System
+        let goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
+
+        document.getElementById('placeBetBtn').addEventListener('click', function() {
+            document.getElementById('betModal').style.display = 'flex';
+        });
+
+        document.getElementById('closeBetModalBtn').addEventListener('click', function() {
+            document.getElementById('betModal').style.display = 'none';
+            resetBetForm();
+        });
+
+        document.getElementById('confirmBetBtn').addEventListener('click', function() {
+            const name = document.getElementById('betName').value.trim();
+            const amount = document.querySelector('input[name="betAmount"]:checked')?.value;
+
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            if (!amount) {
+                alert('Please select an amount');
+                return;
+            }
+
+            // Add bet
+            goldBootBets.push({
+                name: name,
+                amount: parseInt(amount),
+                timestamp: new Date().toLocaleString()
+            });
+
+            // Save to localStorage
+            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+
+            // Reset form and close modal
+            resetBetForm();
+            document.getElementById('betModal').style.display = 'none';
+
+            // Refresh display
+            loadBets();
+
+            console.log('✅ Bet placed!');
+        });
+
+        function resetBetForm() {
+            document.getElementById('betName').value = '';
+            document.querySelectorAll('input[name="betAmount"]').forEach(radio => radio.checked = false);
+        }
+
+        function loadBets() {
+            const betsList = document.getElementById('betsList');
+
+            if (goldBootBets.length === 0) {
+                betsList.innerHTML = '<div style="padding: 32px; text-align: center; color: #888888;">No bets placed yet. Be the first!</div>';
+                return;
+            }
+
+            let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
+            html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
+            html += '<th style="padding: 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
+            html += '<th style="padding: 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
+            html += '</tr></thead><tbody>';
+
+            goldBootBets.forEach((bet, index) => {
+                html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
+                html += `<td style="padding: 16px; color: #ffffff;">${bet.name}</td>`;
+                html += `<td style="padding: 16px; color: #00d084; font-weight: 700;">₹${bet.amount}</td>`;
+                html += `</tr>`;
+            });
+
+            html += '</tbody></table>';
+            betsList.innerHTML = html;
+        }
     </script>
 </body>
 </html>
