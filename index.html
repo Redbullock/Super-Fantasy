@@ -1136,9 +1136,9 @@
         <div class="live-score-container">
             <div class="live-score-content">
                 <div class="match-status">
-                    <div class="status-badge starting"></div>
-                    <span id="matchStatusText">STARTING SOON</span>
-                    <div class="countdown-timer" id="countdownTimer">12:20 AM IST</div>
+                    <div class="status-badge"></div>
+                    <span id="matchStatusText">LIVE</span>
+                    <div class="countdown-timer" id="countdownTimer" style="background: #00d084; color: #000;">🔴 MATCH IN PROGRESS</div>
                 </div>
 
                 <div class="match-display">
@@ -1162,7 +1162,7 @@
                 </div>
 
                 <div class="match-info-footer">
-                    FIFA World Cup 2026 • Match Status: <span id="matchStatusFooter">Starting Soon</span>
+                    FIFA World Cup 2026 • Match Status: <span id="matchStatusFooter">live</span>
                 </div>
             </div>
         </div>
@@ -1778,7 +1778,7 @@
         let matchScore = {
             argentina: 0,
             spain: 0,
-            status: 'starting', // 'starting', 'live', 'final'
+            status: 'live', // 'starting', 'live', 'final'
             matchTime: new Date().setHours(0, 30, 0, 0) // 12:30 AM today
         };
 
