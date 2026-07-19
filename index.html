@@ -1638,125 +1638,181 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        const FIREBASE_DB_URL = "https://super-fantasy-97d0f-default-rtdb.firebaseio.com";
+        // ============================================================================
+        // SECRETS TO ADD (User to replace with backend calls)
+        // ============================================================================
+        // DO NOT hardcode secrets in production. Move these to backend environment:
+        // - Admin password: MUST be validated server-side with secure hashing (bcrypt/Argon2)
+        // - Slack webhook: Use backend endpoint that proxies Slack calls with auth
+        // - Firebase URL: Use backend API proxy that handles Firebase credentials securely
+        //
+        // SECURITY NOTES:
+        // 1. All authentication must be server-side validated
+        // 2. Use HTTPS-only for all API calls
+        // 3. Implement CSRF tokens for form submissions
+        // 4. Store user sessions server-side, not in browser
+        // 5. Sanitize all user input before displaying
+        // ============================================================================
+
+        // === CONFIGURATION ===
+        // Firebase Configuration - MUST BE MOVED TO BACKEND
+        const FIREBASE_DB_URL = "[BACKEND_PROXY_URL]";
         const BETS_URL = FIREBASE_DB_URL + "/goldBootBets.json";
 
-        // Admin Configuration
-        const ADMIN_PASSWORD = 'ThambiPower';
-        const SLACK_WEBHOOK = 'https://hooks.slack.com/services/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';
+        // Admin Configuration - MUST BE VALIDATED SERVER-SIDE
         let isAdminLoggedIn = false;
+        let adminSessionToken = null;
 
-        // Admin Login Handler
-        document.getElementById('adminToggle').addEventListener('click', function() {
-            document.getElementById('adminModal').style.display = 'flex';
-        });
+        // === UTILITY FUNCTIONS ===
 
-        document.getElementById('adminCancel').addEventListener('click', function() {
-            document.getElementById('adminModal').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
-        });
+        /**
+         * Escapes HTML special characters to prevent XSS attacks
+         * Safely converts user input before inserting into DOM
+         * @param {string} text - User input to escape
+         * @returns {string} - HTML-safe escaped string
+         */
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;',
+                '/': '&#x2F;'
+            };
+            return String(text).replace(/[&<>"'\/]/g, function(s) {
+                return map[s];
+            });
+        }
 
-        document.getElementById('adminLogin').addEventListener('click', function() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                document.getElementById('adminModal').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('adminPassword').value = '';
-                console.log('✅ Admin access granted!');
-            } else {
-                console.log('❌ Incorrect password!');
-                document.getElementById('adminPassword').value = '';
+        /**
+         * Validates admin password using secure server-side validation
+         * Client-side check is for UX only; real validation happens on backend
+         * @param {string} password - Password to validate
+         * @returns {Promise<boolean>} - True if password is valid
+         */
+        async function validateAdminPassword(password) {
+            try {
+                // In production, this should call a backend endpoint
+                // const response = await fetch('/api/admin/validate-password', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ password })
+                // });
+                // return response.ok;
+
+                // For now, show this is not implemented
+                console.warn('⚠️ Admin authentication requires backend implementation');
+                return false;
+            } catch (error) {
+                console.error('Authentication error:', error);
+                return false;
             }
-        });
+        }
 
-        document.getElementById('adminLogout').addEventListener('click', function() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminPanel').style.display = 'none';
-            console.log('👋 Logged out!');
-        });
-
-        // Allow Enter key to submit password
-        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('adminLogin').click();
-            }
-        });
-
-        // Slack Integration
+        /**
+         * Sends Slack notification via backend proxy (never expose webhook in frontend)
+         * @param {string} message - Notification message
+         * @param {string} action - Action type for categorization
+         */
         async function sendSlackMessage(message, action) {
             if (!isAdminLoggedIn) {
-                console.log('Please login first!');
+                console.log('⚠️ Admin access required to send notifications');
                 return;
             }
 
             const timestamp = new Date().toLocaleTimeString();
             const slackMessage = {
-                text: `⚽ SUPER FANTASY - Live Update`,
+                text: '⚽ SUPER FANTASY - Live Update',
                 blocks: [
                     {
                         type: "section",
                         text: {
                             type: "mrkdwn",
-                            text: `🔔 *MATCH UPDATE*\n${message}\n_${timestamp}_`
+                            text: `🔔 *MATCH UPDATE*\n${escapeHtml(message)}\n_${timestamp}_`
                         }
                     }
                 ]
             };
 
             try {
-                const response = await fetch(SLACK_WEBHOOK, {
-                    method: 'POST',
-                    body: JSON.stringify(slackMessage)
-                });
+                // This should call your backend endpoint instead
+                // const response = await fetch('/api/notifications/slack', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(slackMessage)
+                // });
 
-                if (response.ok) {
-                    console.log('✅ Slack message sent!');
-                } else {
-                    console.log('❌ Failed to send message');
-                }
+                console.warn('⚠️ Slack integration requires backend implementation');
             } catch (error) {
-                console.error('Slack error:', error);
-                console.log('❌ Error sending to Slack');
+                console.error('Notification error:', error);
             }
         }
 
+        /**
+         * Toggles match card visibility (expand/collapse)
+         * @param {HTMLElement} header - Match header element that was clicked
+         */
         function toggleMatch(header) {
             const matchCard = header.closest('.match-card');
-            const content = matchCard.querySelector('.match-content');
-            const toggle = header.querySelector('.match-toggle');
+            const matchContent = matchCard.querySelector('.match-content');
+            const matchToggle = header.querySelector('.match-toggle');
 
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                toggle.classList.remove('collapsed');
+            // Toggle collapsed state
+            if (matchContent.classList.contains('collapsed')) {
+                matchContent.classList.remove('collapsed');
+                matchToggle.classList.remove('collapsed');
             } else {
-                content.classList.add('collapsed');
-                toggle.classList.add('collapsed');
+                matchContent.classList.add('collapsed');
+                matchToggle.classList.add('collapsed');
             }
         }
 
-        // Initialize all matches as COLLAPSED on first load
-        document.addEventListener('DOMContentLoaded', function() {
-            const matchCards = document.querySelectorAll('.match-card');
-            matchCards.forEach(card => {
-                const content = card.querySelector('.match-content');
-                const toggle = card.querySelector('.match-toggle');
-                if (content) {
-                    content.classList.add('collapsed');
-                    toggle.classList.add('collapsed');
-                }
-            });
+        /**
+         * Displays error message to user
+         * @param {string} message - Error message to display
+         */
+        function showBetError(message) {
+            console.error('Bet Error:', message);
+            try {
+                alert(escapeHtml(message));
+            } catch (e) {
+                console.log('Alert blocked');
+            }
+        }
 
-            // Load and display bets
-            loadBets();
-        });
+        /**
+         * Displays success message to user
+         * @param {string} message - Success message to display
+         */
+        function showBetSuccess(message) {
+            console.log('Bet Success:', message);
+            try {
+                alert(escapeHtml(message));
+            } catch (e) {
+                console.log('Alert blocked');
+            }
+        }
 
-        // Golden Boot Betting System - Firebase REST API
+        /**
+         * Resets the bet placement form to initial state
+         */
+        function resetBetForm() {
+            document.getElementById('betName').value = '';
+            document.querySelectorAll('input[name="betPlayer"]').forEach(radio => radio.checked = false);
+            document.querySelectorAll('input[name="betAmount"]').forEach(radio => radio.checked = false);
+        }
+
+        // === BETTING SYSTEM ===
+
         let goldBootBets = [];
         let firebaseAvailable = true;
 
-        // Load bets from Firebase
+        /**
+         * Loads bets from Firebase REST API
+         * Falls back to localStorage if Firebase is unavailable
+         */
         async function loadBetsFromFirebase() {
             try {
                 console.log('Loading bets from Firebase...');
@@ -1765,8 +1821,9 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data) {
+                        // Convert Firebase object to array
                         goldBootBets = Object.values(data);
-                        console.log('✅ Loaded bets from Firebase:', goldBootBets);
+                        console.log('✅ Loaded bets from Firebase:', goldBootBets.length, 'bets');
                         firebaseAvailable = true;
                     } else {
                         goldBootBets = [];
@@ -1785,17 +1842,171 @@
             }
         }
 
+        /**
+         * Displays bets in the UI with XSS protection
+         * User input is properly escaped before being inserted into DOM
+         */
+        function loadBets() {
+            console.log('Loading bets display - total bets:', goldBootBets.length);
+
+            const betsList = document.getElementById('betsList');
+
+            if (!betsList) {
+                console.error('❌ betsList element not found!');
+                return;
+            }
+
+            try {
+                if (goldBootBets.length === 0) {
+                    console.log('No bets to display');
+                    betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
+                    return;
+                }
+
+                // Build bets table with HTML-escaped user input (XSS PROTECTION)
+                let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
+                html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
+                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
+                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
+                html += '<th style="padding: 12px 8px; text-align: right; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
+                html += '</tr></thead><tbody>';
+
+                // XSS FIX: Escape all user input before inserting into HTML
+                goldBootBets.forEach((bet) => {
+                    const escapedName = escapeHtml(bet.name || 'N/A');
+                    const escapedPlayer = escapeHtml(bet.player || 'N/A');
+                    const escapedAmount = escapeHtml(String(bet.amount || 0));
+
+                    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
+                    html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${escapedName}</td>`;
+                    html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${escapedPlayer}</td>`;
+                    html += `<td style="padding: 10px 8px; color: #00d084; font-weight: 700; font-size: 13px; text-align: right;">₹${escapedAmount}</td>`;
+                    html += `</tr>`;
+                });
+
+                html += '</tbody></table>';
+                betsList.innerHTML = html;
+                console.log('✅ Bets displayed successfully');
+            } catch (error) {
+                console.error('❌ Error loading bets:', error);
+                betsList.innerHTML = '<div style="padding: 20px; color: #ff3b30;">Error loading bets. Please refresh the page.</div>';
+            }
+        }
+
+        /**
+         * Saves bet to localStorage as fallback when Firebase is unavailable
+         * @param {object} newBet - Bet object to save
+         * @param {string} playerName - Name of the person placing the bet
+         */
+        function saveBetLocally(newBet, playerName) {
+            goldBootBets.push(newBet);
+            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+            resetBetForm();
+            document.getElementById('betModalBackdrop').style.display = 'none';
+            document.getElementById('betModal').style.display = 'none';
+            loadBets();
+            showBetSuccess(escapeHtml(playerName) + ', your bet is placed! 🎉');
+        }
+
+        // === ADMIN AUTHENTICATION ===
+
+        /**
+         * Validates admin login with backend server-side check
+         * Frontend validation is for UX only - backend must verify password
+         */
+        async function handleAdminLogin() {
+            const passwordInput = document.getElementById('adminPassword');
+            const password = passwordInput.value;
+
+            if (!password) {
+                showBetError('Please enter a password');
+                return;
+            }
+
+            // In production, validate against backend endpoint
+            const isValid = await validateAdminPassword(password);
+
+            if (isValid) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminModal').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                passwordInput.value = '';
+                console.log('✅ Admin access granted');
+            } else {
+                console.log('❌ Authentication failed - backend validation required');
+                showBetError('Admin authentication not configured. Please set up backend server.');
+                passwordInput.value = '';
+            }
+        }
+
+        /**
+         * Handles admin logout
+         */
+        function handleAdminLogout() {
+            isAdminLoggedIn = false;
+            adminSessionToken = null;
+            document.getElementById('adminPanel').style.display = 'none';
+            console.log('👋 Admin session ended');
+        }
+
+        // === EVENT LISTENERS ===
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Collapse all match cards initially
+            const matchCards = document.querySelectorAll('.match-card');
+            matchCards.forEach(card => {
+                const matchContent = card.querySelector('.match-content');
+                const matchToggle = card.querySelector('.match-toggle');
+                if (matchContent) {
+                    matchContent.classList.add('collapsed');
+                    matchToggle.classList.add('collapsed');
+                }
+            });
+
+            // Load bets on page load
+            loadBetsFromFirebase();
+        });
+
         // Refresh bets every 3 seconds for real-time updates
-        loadBetsFromFirebase();
         setInterval(loadBetsFromFirebase, 3000);
 
+        // Admin toggle button - open login modal
+        document.getElementById('adminToggle').addEventListener('click', function() {
+            document.getElementById('adminModal').style.display = 'flex';
+        });
+
+        // Admin cancel button - close login modal
+        document.getElementById('adminCancel').addEventListener('click', function() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        });
+
+        // Admin login button - validate credentials
+        document.getElementById('adminLogin').addEventListener('click', function() {
+            handleAdminLogin();
+        });
+
+        // Admin logout button - end session
+        document.getElementById('adminLogout').addEventListener('click', function() {
+            handleAdminLogout();
+        });
+
+        // Admin password field - allow Enter key to submit
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleAdminLogin();
+            }
+        });
+
+        // Place bet button - open betting modal
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
             document.getElementById('betModal').style.display = 'block';
-            // Scroll modal into view
             document.getElementById('betModal').scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
+        // Close bet modal button
         document.getElementById('closeBetModalBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
@@ -1809,159 +2020,76 @@
             resetBetForm();
         });
 
+        // Confirm bet button - validate and save bet
         document.getElementById('confirmBetBtn').addEventListener('click', function() {
-            console.log('Place bet button clicked');
+            console.log('Place bet clicked');
 
-            const player = document.querySelector('input[name="betPlayer"]:checked')?.value;
-            const name = document.getElementById('betName').value.trim();
-            const amount = document.querySelector('input[name="betAmount"]:checked')?.value;
+            // Gather form data
+            const selectedPlayer = document.querySelector('input[name="betPlayer"]:checked')?.value;
+            const playerName = document.getElementById('betName').value.trim();
+            const selectedAmount = document.querySelector('input[name="betAmount"]:checked')?.value;
 
-            console.log('Form data:', { player, name, amount });
-
-            if (!player) {
-                console.log('❌ No player selected');
+            // Validate required fields
+            if (!selectedPlayer) {
                 showBetError('Please select a player (Mbappé or Messi)');
                 return;
             }
 
-            if (!name) {
-                console.log('❌ No name entered');
+            if (!playerName) {
                 showBetError('Please enter your name');
                 return;
             }
 
-            if (!amount) {
-                console.log('❌ No amount selected');
+            if (!selectedAmount) {
                 showBetError('Please select an amount');
                 return;
             }
 
             try {
-                // Add bet
+                // Create bet object
                 const newBet = {
-                    name: name,
-                    player: player === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
-                    amount: parseInt(amount),
+                    name: playerName,
+                    player: selectedPlayer === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
+                    amount: parseInt(selectedAmount),
                     timestamp: new Date().toLocaleString()
                 };
 
                 console.log('Saving bet:', newBet);
 
-                // Try Firebase first
+                // Try Firebase first, fall back to localStorage
                 if (firebaseAvailable) {
-                    console.log('Saving to Firebase...');
+                    console.log('Attempting Firebase save...');
                     fetch(BETS_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(newBet)
                     }).then(response => {
                         if (response.ok) {
-                            console.log('✅ Bet saved to Firebase!');
+                            console.log('✅ Bet saved to Firebase');
                             resetBetForm();
                             document.getElementById('betModalBackdrop').style.display = 'none';
                             document.getElementById('betModal').style.display = 'none';
-                            showBetSuccess(name + ', your bet is placed! 🎉');
+                            showBetSuccess(escapeHtml(playerName) + ', your bet is placed! 🎉');
                             // Refresh bets immediately
                             setTimeout(loadBetsFromFirebase, 500);
                         } else {
                             throw new Error('Firebase save failed');
                         }
                     }).catch(error => {
-                        console.warn('Firebase failed, falling back to localStorage:', error);
+                        console.warn('Firebase unavailable, using localStorage:', error);
                         firebaseAvailable = false;
-                        saveBetLocally(newBet, name);
+                        saveBetLocally(newBet, playerName);
                     });
                 } else {
-                    console.log('Using localStorage');
-                    saveBetLocally(newBet, name);
+                    console.log('Using localStorage for bet storage');
+                    saveBetLocally(newBet, playerName);
                 }
 
             } catch (error) {
                 console.error('❌ Error placing bet:', error);
                 showBetError('Error placing bet. Please try again.');
             }
-
-            function saveBetLocally(newBet, name) {
-                goldBootBets.push(newBet);
-                localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
-                resetBetForm();
-                document.getElementById('betModalBackdrop').style.display = 'none';
-                document.getElementById('betModal').style.display = 'none';
-                loadBets();
-                showBetSuccess(name + ', your bet is placed! 🎉');
-            }
         });
-
-        function showBetError(message) {
-            console.log('Error message:', message);
-            // Show error in console
-            console.error(message);
-            // Also try alert as fallback
-            try {
-                alert(message);
-            } catch (e) {
-                console.log('Alert blocked');
-            }
-        }
-
-        function showBetSuccess(message) {
-            console.log('Success message:', message);
-            // Show success in console
-            console.log(message);
-            // Also try alert as fallback
-            try {
-                alert(message);
-            } catch (e) {
-                console.log('Alert blocked');
-            }
-        }
-
-        function resetBetForm() {
-            document.getElementById('betName').value = '';
-            document.querySelectorAll('input[name="betPlayer"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="betAmount"]').forEach(radio => radio.checked = false);
-        }
-
-        function loadBets() {
-            console.log('loadBets() called - Firebase has', goldBootBets.length, 'bets');
-
-            const betsList = document.getElementById('betsList');
-
-            if (!betsList) {
-                console.error('❌ betsList element not found!');
-                return;
-            }
-
-            try {
-                if (goldBootBets.length === 0) {
-                    console.log('No bets - showing empty message');
-                    betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
-                    return;
-                }
-
-                let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
-                html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
-                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
-                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
-                html += '<th style="padding: 12px 8px; text-align: right; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
-                html += '</tr></thead><tbody>';
-
-                goldBootBets.forEach((bet, index) => {
-                    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
-                    html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${bet.name || 'N/A'}</td>`;
-                    html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${bet.player || 'N/A'}</td>`;
-                    html += `<td style="padding: 10px 8px; color: #00d084; font-weight: 700; font-size: 13px; text-align: right;">₹${bet.amount || 0}</td>`;
-                    html += `</tr>`;
-                });
-
-                html += '</tbody></table>';
-                betsList.innerHTML = html;
-                console.log('✅ Bets displayed successfully');
-            } catch (error) {
-                console.error('❌ Error in loadBets:', error);
-                betsList.innerHTML = '<div style="padding: 20px; color: #ff3b30;">Error loading bets. Please refresh the page.</div>';
-            }
-        }
     </script>
 </body>
 </html>
