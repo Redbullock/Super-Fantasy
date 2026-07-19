@@ -1932,8 +1932,20 @@
 
         /**
          * Starts countdown timer to match time (12:20 AM local time)
+         * Disabled when match is already live
          */
         function startCountdown() {
+            // Match is already live - don't show countdown timer
+            if (matchScore.status === 'live') {
+                const timerEl = document.getElementById('countdownTimer');
+                if (timerEl) {
+                    timerEl.textContent = '🔴 MATCH IN PROGRESS';
+                    timerEl.style.background = '#00d084';
+                    timerEl.style.color = '#000';
+                }
+                return;
+            }
+
             setInterval(() => {
                 const now = new Date();
                 const nextMatch = new Date();
@@ -1953,7 +1965,7 @@
                 if (timerEl && diff > 0) {
                     timerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 } else if (timerEl) {
-                    timerEl.textContent = '00:00:00';
+                    timerEl.textContent = '🔴 MATCH IN PROGRESS';
                     matchScore.status = 'live';
                     updateLiveScore();
                 }
