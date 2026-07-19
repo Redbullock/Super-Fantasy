@@ -1751,6 +1751,25 @@
         // Golden Boot Betting System
         let goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
 
+        // Seed initial bets manually
+        if (goldBootBets.length === 0) {
+            goldBootBets = [
+                {
+                    name: 'Thanmay',
+                    player: '🇫🇷 Mbappé',
+                    amount: 100,
+                    timestamp: new Date().toLocaleString()
+                },
+                {
+                    name: 'Mohan',
+                    player: '🇦🇷 Messi',
+                    amount: 100,
+                    timestamp: new Date().toLocaleString()
+                }
+            ];
+            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+        }
+
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
             document.getElementById('betModal').style.display = 'block';
