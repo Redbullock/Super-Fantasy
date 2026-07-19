@@ -1454,13 +1454,13 @@
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
             document.getElementById('betModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            // Scroll modal into view
+            document.getElementById('betModal').scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
         document.getElementById('closeBetModalBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
             resetBetForm();
         });
 
@@ -1468,7 +1468,6 @@
         document.getElementById('betModalBackdrop').addEventListener('click', function() {
             this.style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
             resetBetForm();
         });
 
@@ -1507,7 +1506,6 @@
             resetBetForm();
             document.getElementById('betModalBackdrop').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
 
             // Refresh display
             loadBets();
