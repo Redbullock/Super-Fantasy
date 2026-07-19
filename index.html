@@ -1270,9 +1270,9 @@
                 document.getElementById('adminModal').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('adminPassword').value = '';
-                alert('✅ Admin access granted!');
+                console.log('✅ Admin access granted!');
             } else {
-                alert('❌ Incorrect password!');
+                console.log('❌ Incorrect password!');
                 document.getElementById('adminPassword').value = '';
             }
         });
@@ -1280,7 +1280,7 @@
         document.getElementById('adminLogout').addEventListener('click', function() {
             isAdminLoggedIn = false;
             document.getElementById('adminPanel').style.display = 'none';
-            alert('👋 Logged out!');
+            console.log('👋 Logged out!');
         });
 
         // Allow Enter key to submit password
@@ -1293,7 +1293,7 @@
         // Slack Integration
         async function sendSlackMessage(message, action) {
             if (!isAdminLoggedIn) {
-                alert('Please login first!');
+                console.log('Please login first!');
                 return;
             }
 
@@ -1318,13 +1318,13 @@
                 });
 
                 if (response.ok) {
-                    alert('✅ Slack message sent!');
+                    console.log('✅ Slack message sent!');
                 } else {
-                    alert('❌ Failed to send message');
+                    console.log('❌ Failed to send message');
                 }
             } catch (error) {
                 console.error('Slack error:', error);
-                alert('❌ Error sending to Slack');
+                console.log('❌ Error sending to Slack');
             }
         }
 
