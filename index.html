@@ -1281,9 +1281,23 @@
         </div>
 
         <!-- Bet Modal -->
-        <div id="betModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
-            <div style="background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;">
+        <div id="betModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; overflow-y: auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 100%; margin: 100px auto; box-sizing: border-box;">
                 <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 24px; font-family: 'Space Grotesk', sans-serif;">Place Your Bet</h2>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase;">Select Player</label>
+                    <div style="display: flex; gap: 12px;">
+                        <label style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; text-align: center;">
+                            <input type="radio" name="betPlayer" value="mbappe" style="cursor: pointer;">
+                            <span style="color: #ffffff; display: block; margin-top: 8px; font-size: 13px; font-weight: 600;">🇫🇷 Mbappé</span>
+                        </label>
+                        <label style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; text-align: center;">
+                            <input type="radio" name="betPlayer" value="messi" style="cursor: pointer;">
+                            <span style="color: #ffffff; display: block; margin-top: 8px; font-size: 13px; font-weight: 600;">🇦🇷 Messi</span>
+                        </label>
+                    </div>
+                </div>
 
                 <div style="margin-bottom: 24px;">
                     <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">Your Name</label>
@@ -1446,8 +1460,14 @@
         });
 
         document.getElementById('confirmBetBtn').addEventListener('click', function() {
+            const player = document.querySelector('input[name="betPlayer"]:checked')?.value;
             const name = document.getElementById('betName').value.trim();
             const amount = document.querySelector('input[name="betAmount"]:checked')?.value;
+
+            if (!player) {
+                alert('Please select a player (Mbappé or Messi)');
+                return;
+            }
 
             if (!name) {
                 alert('Please enter your name');
@@ -1462,6 +1482,7 @@
             // Add bet
             goldBootBets.push({
                 name: name,
+                player: player === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
                 amount: parseInt(amount),
                 timestamp: new Date().toLocaleString()
             });
@@ -1481,6 +1502,7 @@
 
         function resetBetForm() {
             document.getElementById('betName').value = '';
+            document.querySelectorAll('input[name="betPlayer"]').forEach(radio => radio.checked = false);
             document.querySelectorAll('input[name="betAmount"]').forEach(radio => radio.checked = false);
         }
 
@@ -1495,12 +1517,14 @@
             let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
             html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
             html += '<th style="padding: 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
+            html += '<th style="padding: 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
             html += '<th style="padding: 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
             html += '</tr></thead><tbody>';
 
             goldBootBets.forEach((bet, index) => {
                 html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
                 html += `<td style="padding: 16px; color: #ffffff;">${bet.name}</td>`;
+                html += `<td style="padding: 16px; color: #00d4ff; font-weight: 600;">${bet.player}</td>`;
                 html += `<td style="padding: 16px; color: #00d084; font-weight: 700;">₹${bet.amount}</td>`;
                 html += `</tr>`;
             });
