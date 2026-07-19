@@ -1171,7 +1171,7 @@
                 <div class="match-status">
                     <div class="status-badge starting"></div>
                     <span id="matchStatusText">STARTING SOON</span>
-                    <div class="countdown-timer" id="countdownTimer">12:30 AM</div>
+                    <div class="countdown-timer" id="countdownTimer">12:20 AM IST</div>
                 </div>
 
                 <div class="match-display">
@@ -1195,7 +1195,7 @@
                 </div>
 
                 <div class="match-info-footer">
-                    Copa América Final • Match Status: <span id="matchStatusFooter">Starting Soon</span>
+                    FIFA World Cup 2026 • Match Status: <span id="matchStatusFooter">Starting Soon</span>
                 </div>
             </div>
         </div>
@@ -2062,26 +2062,27 @@
         }
 
         /**
-         * Starts countdown timer to match time (12:30 AM IST)
+         * Starts countdown timer to match time (12:20 AM IST)
          */
         function startCountdown() {
             setInterval(() => {
-                // Get current UTC time and convert to IST (UTC+5:30)
+                // Get current time in IST
                 const now = new Date();
-                const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
+                // IST is UTC+5:30, so we calculate offset from user's timezone
+                const istOffset = (5.5 * 60) - now.getTimezoneOffset();
+                const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
 
-                // Create next 12:30 AM IST
+                // Create next 12:20 AM IST
                 const nextMatch = new Date(istTime);
-                nextMatch.setHours(0, 30, 0, 0);
+                nextMatch.setHours(0, 20, 0, 0);
 
-                // If 12:30 AM has already passed today, set for tomorrow
+                // If 12:20 AM has already passed, set for tomorrow
                 if (istTime > nextMatch) {
                     nextMatch.setDate(nextMatch.getDate() + 1);
                 }
 
-                // Calculate difference (convert IST back to UTC for calculation)
-                const matchTimeUTC = new Date(nextMatch.getTime() - (5.5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60 * 1000));
-                const diff = matchTimeUTC - now;
+                // Calculate difference back to UTC for comparison with now
+                const diff = nextMatch.getTime() - istTime.getTime();
 
                 const hours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
