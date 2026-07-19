@@ -1813,9 +1813,13 @@
          */
         async function validateAdminPassword(password) {
             try {
-                // Accept any non-empty password for testing
-                // In production, this should call a backend endpoint with proper hashing
-                return password && password.length > 0;
+                // Only accept the correct admin password
+                const correctPassword = 'ThambiPower';
+                const isValid = password === correctPassword;
+                if (!isValid) {
+                    alert('❌ Incorrect password. Please try again.');
+                }
+                return isValid;
             } catch (error) {
                 console.error('Authentication error:', error);
                 return false;
