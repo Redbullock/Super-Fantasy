@@ -801,90 +801,6 @@
                 padding: 10px 8px;
             }
 
-            /* Golden Boot Cards */
-            .golden-boot-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .golden-boot-card {
-                padding: 16px !important;
-            }
-
-            .golden-boot-card img {
-                width: 80px;
-                height: 80px;
-                margin-bottom: 12px !important;
-            }
-
-            .golden-boot-card h3 {
-                font-size: 16px;
-                margin-bottom: 6px !important;
-            }
-
-            .golden-boot-card > div:nth-child(3) {
-                margin-bottom: 8px !important;
-            }
-
-            .golden-boot-goals {
-                font-size: 36px;
-                margin: 12px 0 !important;
-            }
-
-            /* Place Bet Button */
-            #placeBetBtn {
-                width: 100%;
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-
-            /* Betting Modal */
-            #betModal {
-                width: 95vw;
-                max-width: 95vw;
-                padding: 16px;
-            }
-
-            #betModal > div {
-                padding: 20px;
-                max-width: 100%;
-                width: 100%;
-            }
-
-            #betModal h2 {
-                font-size: 18px;
-                margin-bottom: 16px;
-            }
-
-            #betModal input,
-            #betModal label {
-                font-size: 13px;
-            }
-
-            .bet-player-options {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .bet-player-options label {
-                padding: 10px;
-            }
-
-            .bet-amount-options {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .bet-amount-options label {
-                flex: 1 1 calc(33.333% - 6px);
-                min-width: 70px;
-            }
-
-            #betModal button {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
             /* Match Cards */
             .match-card {
                 margin-bottom: 16px;
@@ -1826,96 +1742,6 @@
             </div>
         </div>
 
-        <!-- Golden Boot Section -->
-        <div style="margin-top: 80px;">
-            <h2 style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid rgba(0,212,255,0.3); color: #ffffff; font-family: 'Space Grotesk', sans-serif;">🥾 Golden Boot Race</h2>
-
-            <div class="golden-boot-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                <!-- Mbappé Card -->
-                <div class="golden-boot-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Kylian_Mbappé_-_2023.jpg/220px-Kylian_Mbappé_-_2023.jpg" alt="Mbappé" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid rgba(0,212,255,0.3);">
-                    <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif;">Kylian Mbappé</h3>
-                    <div style="font-size: 13px; color: #00d4ff; margin-bottom: 16px;">🇫🇷 France</div>
-                    <div class="golden-boot-goals" style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">10</div>
-                    <div style="font-size: 13px; color: #888888; text-transform: uppercase; letter-spacing: 0.05em;">Goals</div>
-                </div>
-
-                <!-- Messi Card -->
-                <div class="golden-boot-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Lionel_Messi_2018.jpg/220px-Lionel_Messi_2018.jpg" alt="Messi" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid rgba(0,212,255,0.3);">
-                    <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif;">Lionel Messi</h3>
-                    <div style="font-size: 13px; color: #00d4ff; margin-bottom: 16px;">🇦🇷 Argentina</div>
-                    <div class="golden-boot-goals" style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">8</div>
-                    <div style="font-size: 13px; color: #888888; text-transform: uppercase; letter-spacing: 0.05em;">Goals</div>
-                </div>
-            </div>
-
-            <p style="margin-top: 24px; font-size: 12px; color: #888888; text-align: center;">Who will win the Golden Boot? Place your bets!</p>
-
-            <!-- Place Bet Button -->
-            <div style="text-align: center; margin-top: 40px;">
-                <button id="placeBetBtn" style="background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%); color: #000000; border: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all 0.3s ease;">💰 Place Your Bet</button>
-            </div>
-
-            <!-- Bets List -->
-            <div style="margin-top: 40px;">
-                <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 20px; font-family: 'Space Grotesk', sans-serif;">📋 Bets Placed</h3>
-                <div id="betsList" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; overflow: hidden;">
-                    <div style="padding: 32px; text-align: center; color: #888888;">No bets placed yet. Be the first!</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bet Modal -->
-        <div id="betModalBackdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998;"></div>
-        <div id="betModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; box-sizing: border-box; max-height: 85vh; overflow-y: auto; z-index: 9999;">
-            <div>
-                <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 24px; font-family: 'Space Grotesk', sans-serif;">Place Your Bet</h2>
-
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase;">Select Player</label>
-                    <div style="display: flex; gap: 12px;">
-                        <label style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; text-align: center;">
-                            <input type="radio" name="betPlayer" value="mbappe" style="cursor: pointer;">
-                            <span style="color: #ffffff; display: block; margin-top: 8px; font-size: 13px; font-weight: 600;">🇫🇷 Mbappé</span>
-                        </label>
-                        <label style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; text-align: center;">
-                            <input type="radio" name="betPlayer" value="messi" style="cursor: pointer;">
-                            <span style="color: #ffffff; display: block; margin-top: 8px; font-size: 13px; font-weight: 600;">🇦🇷 Messi</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">Your Name</label>
-                    <input id="betName" type="text" placeholder="Enter your name" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; font-family: 'Inter', sans-serif; box-sizing: border-box; font-size: 14px;">
-                </div>
-
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-size: 13px; color: #00d4ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase;">Select Amount</label>
-                    <div style="display: flex; gap: 12px;">
-                        <label style="flex: 1;">
-                            <input type="radio" name="betAmount" value="100" style="cursor: pointer;">
-                            <span style="color: #ffffff; margin-left: 8px;">₹100</span>
-                        </label>
-                        <label style="flex: 1;">
-                            <input type="radio" name="betAmount" value="500" style="cursor: pointer;">
-                            <span style="color: #ffffff; margin-left: 8px;">₹500</span>
-                        </label>
-                        <label style="flex: 1;">
-                            <input type="radio" name="betAmount" value="1000" style="cursor: pointer;">
-                            <span style="color: #ffffff; margin-left: 8px;">₹1000</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 12px;">
-                    <button id="confirmBetBtn" style="flex: 1; background: #00d084; color: #000000; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif;">Place Bet</button>
-                    <button id="closeBetModalBtn" style="flex: 1; background: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif;">Cancel</button>
-                </div>
-            </div>
-        </div>
-
         <!-- Footer -->
         <div style="padding: 80px 0 40px 0; text-align: center; color: #666666; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px;">
             <p>⚽ Final settlement will be completed after Match 4 is played. All calculations use full precision internally and are rounded for display.</p>
@@ -1943,7 +1769,6 @@
         // === CONFIGURATION ===
         // Firebase Configuration - MUST BE MOVED TO BACKEND
         const FIREBASE_DB_URL = "[BACKEND_PROXY_URL]";
-        const BETS_URL = FIREBASE_DB_URL + "/goldBootBets.json";
 
         // Admin Configuration - MUST BE VALIDATED SERVER-SIDE
         let isAdminLoggedIn = false;
@@ -2161,145 +1986,6 @@
             }
         }
 
-        /**
-         * Displays error message to user
-         * @param {string} message - Error message to display
-         */
-        function showBetError(message) {
-            console.error('Bet Error:', message);
-            try {
-                alert(escapeHtml(message));
-            } catch (e) {
-                console.log('Alert blocked');
-            }
-        }
-
-        /**
-         * Displays success message to user
-         * @param {string} message - Success message to display
-         */
-        function showBetSuccess(message) {
-            console.log('Bet Success:', message);
-            try {
-                alert(escapeHtml(message));
-            } catch (e) {
-                console.log('Alert blocked');
-            }
-        }
-
-        /**
-         * Resets the bet placement form to initial state
-         */
-        function resetBetForm() {
-            document.getElementById('betName').value = '';
-            document.querySelectorAll('input[name="betPlayer"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="betAmount"]').forEach(radio => radio.checked = false);
-        }
-
-        // === BETTING SYSTEM ===
-
-        let goldBootBets = [];
-        let firebaseAvailable = true;
-
-        /**
-         * Loads bets from Firebase REST API
-         * Falls back to localStorage if Firebase is unavailable
-         */
-        async function loadBetsFromFirebase() {
-            try {
-                console.log('Loading bets from Firebase...');
-                const response = await fetch(BETS_URL);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data) {
-                        // Convert Firebase object to array
-                        goldBootBets = Object.values(data);
-                        console.log('✅ Loaded bets from Firebase:', goldBootBets.length, 'bets');
-                        firebaseAvailable = true;
-                    } else {
-                        goldBootBets = [];
-                    }
-                } else {
-                    console.warn('⚠️ Firebase not available, using localStorage');
-                    firebaseAvailable = false;
-                    goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
-                }
-                loadBets();
-            } catch (error) {
-                console.warn('⚠️ Firebase error:', error);
-                firebaseAvailable = false;
-                goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
-                loadBets();
-            }
-        }
-
-        /**
-         * Displays bets in the UI with XSS protection
-         * User input is properly escaped before being inserted into DOM
-         */
-        function loadBets() {
-            console.log('Loading bets display - total bets:', goldBootBets.length);
-
-            const betsList = document.getElementById('betsList');
-
-            if (!betsList) {
-                console.error('❌ betsList element not found!');
-                return;
-            }
-
-            try {
-                if (goldBootBets.length === 0) {
-                    console.log('No bets to display');
-                    betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
-                    return;
-                }
-
-                // Build bets table with HTML-escaped user input (XSS PROTECTION)
-                let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
-                html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
-                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
-                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
-                html += '<th style="padding: 12px 8px; text-align: right; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
-                html += '</tr></thead><tbody>';
-
-                // XSS FIX: Escape all user input before inserting into HTML
-                goldBootBets.forEach((bet) => {
-                    const escapedName = escapeHtml(bet.name || 'N/A');
-                    const escapedPlayer = escapeHtml(bet.player || 'N/A');
-                    const escapedAmount = escapeHtml(String(bet.amount || 0));
-
-                    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
-                    html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${escapedName}</td>`;
-                    html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${escapedPlayer}</td>`;
-                    html += `<td style="padding: 10px 8px; color: #00d084; font-weight: 700; font-size: 13px; text-align: right;">₹${escapedAmount}</td>`;
-                    html += `</tr>`;
-                });
-
-                html += '</tbody></table>';
-                betsList.innerHTML = html;
-                console.log('✅ Bets displayed successfully');
-            } catch (error) {
-                console.error('❌ Error loading bets:', error);
-                betsList.innerHTML = '<div style="padding: 20px; color: #ff3b30;">Error loading bets. Please refresh the page.</div>';
-            }
-        }
-
-        /**
-         * Saves bet to localStorage as fallback when Firebase is unavailable
-         * @param {object} newBet - Bet object to save
-         * @param {string} playerName - Name of the person placing the bet
-         */
-        function saveBetLocally(newBet, playerName) {
-            goldBootBets.push(newBet);
-            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
-            resetBetForm();
-            document.getElementById('betModalBackdrop').style.display = 'none';
-            document.getElementById('betModal').style.display = 'none';
-            loadBets();
-            showBetSuccess(escapeHtml(playerName) + ', your bet is placed! 🎉');
-        }
-
         // === ADMIN AUTHENTICATION ===
 
         /**
@@ -2311,7 +1997,7 @@
             const password = passwordInput.value;
 
             if (!password) {
-                showBetError('Please enter a password');
+                console.error('No password entered');
                 return;
             }
 
@@ -2326,7 +2012,6 @@
                 console.log('✅ Admin access granted');
             } else {
                 console.log('❌ Authentication failed - backend validation required');
-                showBetError('Admin authentication not configured. Please set up backend server.');
                 passwordInput.value = '';
             }
         }
@@ -2390,18 +2075,12 @@
                 }
             });
 
-            // Load bets on page load
-            loadBetsFromFirebase();
-
             // Start countdown timer for match
             startCountdown();
 
             // Initialize live score display
             updateLiveScore();
         });
-
-        // Refresh bets every 3 seconds for real-time updates
-        setInterval(loadBetsFromFirebase, 3000);
 
         // Admin toggle button - open login modal
         document.getElementById('adminToggle').addEventListener('click', function() {
@@ -2431,97 +2110,6 @@
             }
         });
 
-        // Place bet button - open betting modal
-        document.getElementById('placeBetBtn').addEventListener('click', function() {
-            document.getElementById('betModalBackdrop').style.display = 'block';
-            document.getElementById('betModal').style.display = 'block';
-            document.getElementById('betModal').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-
-        // Close bet modal button
-        document.getElementById('closeBetModalBtn').addEventListener('click', function() {
-            document.getElementById('betModalBackdrop').style.display = 'none';
-            document.getElementById('betModal').style.display = 'none';
-            resetBetForm();
-        });
-
-        // Close modal when clicking backdrop
-        document.getElementById('betModalBackdrop').addEventListener('click', function() {
-            this.style.display = 'none';
-            document.getElementById('betModal').style.display = 'none';
-            resetBetForm();
-        });
-
-        // Confirm bet button - validate and save bet
-        document.getElementById('confirmBetBtn').addEventListener('click', function() {
-            console.log('Place bet clicked');
-
-            // Gather form data
-            const selectedPlayer = document.querySelector('input[name="betPlayer"]:checked')?.value;
-            const playerName = document.getElementById('betName').value.trim();
-            const selectedAmount = document.querySelector('input[name="betAmount"]:checked')?.value;
-
-            // Validate required fields
-            if (!selectedPlayer) {
-                showBetError('Please select a player (Mbappé or Messi)');
-                return;
-            }
-
-            if (!playerName) {
-                showBetError('Please enter your name');
-                return;
-            }
-
-            if (!selectedAmount) {
-                showBetError('Please select an amount');
-                return;
-            }
-
-            try {
-                // Create bet object
-                const newBet = {
-                    name: playerName,
-                    player: selectedPlayer === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
-                    amount: parseInt(selectedAmount),
-                    timestamp: new Date().toLocaleString()
-                };
-
-                console.log('Saving bet:', newBet);
-
-                // Try Firebase first, fall back to localStorage
-                if (firebaseAvailable) {
-                    console.log('Attempting Firebase save...');
-                    fetch(BETS_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(newBet)
-                    }).then(response => {
-                        if (response.ok) {
-                            console.log('✅ Bet saved to Firebase');
-                            resetBetForm();
-                            document.getElementById('betModalBackdrop').style.display = 'none';
-                            document.getElementById('betModal').style.display = 'none';
-                            showBetSuccess(escapeHtml(playerName) + ', your bet is placed! 🎉');
-                            // Refresh bets immediately
-                            setTimeout(loadBetsFromFirebase, 500);
-                        } else {
-                            throw new Error('Firebase save failed');
-                        }
-                    }).catch(error => {
-                        console.warn('Firebase unavailable, using localStorage:', error);
-                        firebaseAvailable = false;
-                        saveBetLocally(newBet, playerName);
-                    });
-                } else {
-                    console.log('Using localStorage for bet storage');
-                    saveBetLocally(newBet, playerName);
-                }
-
-            } catch (error) {
-                console.error('❌ Error placing bet:', error);
-                showBetError('Error placing bet. Please try again.');
-            }
-        });
     </script>
 </body>
 </html>
