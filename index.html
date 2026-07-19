@@ -6,6 +6,9 @@
     <title>SUPER FANTASY - Football Betting Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
     <style>
         * {
             margin: 0;
@@ -1638,6 +1641,22 @@
     </div>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnP84_l2GS3Rk2_jTIPdqK76vPg2ZQelQ",
+            authDomain: "super-fantasy-97d0f.firebaseapp.com",
+            databaseURL: "https://super-fantasy-97d0f-default-rtdb.firebaseio.com",
+            projectId: "super-fantasy-97d0f",
+            storageBucket: "super-fantasy-97d0f.firebasestorage.app",
+            messagingSenderId: "574785696022",
+            appId: "1:574785696022:web:02569e0b5fc6fc77ca6037",
+            measurementId: "G-NWQDM1PQVH"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Admin Configuration
         const ADMIN_PASSWORD = 'ThambiPower';
         const SLACK_WEBHOOK = 'https://hooks.slack.com/services/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';
@@ -1748,27 +1767,24 @@
             loadBets();
         });
 
-        // Golden Boot Betting System
-        let goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
+        // Golden Boot Betting System - Firebase
+        let goldBootBets = [];
+        const betsRef = database.ref('goldBootBets');
 
-        // Seed initial bets manually
-        if (goldBootBets.length === 0) {
-            goldBootBets = [
-                {
-                    name: 'Thanmay',
-                    player: '🇫🇷 Mbappé',
-                    amount: 100,
-                    timestamp: new Date().toLocaleString()
-                },
-                {
-                    name: 'Mohan',
-                    player: '🇦🇷 Messi',
-                    amount: 100,
-                    timestamp: new Date().toLocaleString()
-                }
-            ];
-            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
-        }
+        // Real-time listener for bets
+        betsRef.on('value', function(snapshot) {
+            console.log('Firebase bets updated');
+            const data = snapshot.val();
+            if (data) {
+                goldBootBets = Object.values(data);
+                console.log('Loaded bets from Firebase:', goldBootBets);
+            } else {
+                goldBootBets = [];
+            }
+            loadBets();
+        }, function(error) {
+            console.error('Error reading from Firebase:', error);
+        });
 
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
@@ -1826,24 +1842,25 @@
                     timestamp: new Date().toLocaleString()
                 };
 
-                goldBootBets.push(newBet);
-                console.log('Bet added to array:', newBet);
-                console.log('Total bets:', goldBootBets);
+                console.log('Saving bet to Firebase:', newBet);
 
-                // Save to localStorage
-                localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
-                console.log('✅ Saved to localStorage');
+                // Save to Firebase
+                betsRef.push(newBet, function(error) {
+                    if (error) {
+                        console.error('❌ Firebase error:', error);
+                        showBetError('Error saving bet. Please try again.');
+                    } else {
+                        console.log('✅ Bet saved to Firebase!');
 
-                // Reset form and close modal
-                resetBetForm();
-                document.getElementById('betModalBackdrop').style.display = 'none';
-                document.getElementById('betModal').style.display = 'none';
+                        // Reset form and close modal
+                        resetBetForm();
+                        document.getElementById('betModalBackdrop').style.display = 'none';
+                        document.getElementById('betModal').style.display = 'none';
 
-                // Refresh display
-                loadBets();
-
-                console.log('✅ Bet placed successfully!');
-                showBetSuccess(name + ', your bet is placed! 🎉');
+                        // Show success
+                        showBetSuccess(name + ', your bet is placed! 🎉');
+                    }
+                });
 
             } catch (error) {
                 console.error('❌ Error placing bet:', error);
@@ -1882,7 +1899,7 @@
         }
 
         function loadBets() {
-            console.log('loadBets() called');
+            console.log('loadBets() called - Firebase has', goldBootBets.length, 'bets');
 
             const betsList = document.getElementById('betsList');
 
@@ -1892,14 +1909,6 @@
             }
 
             try {
-                // Reload from localStorage to ensure fresh data
-                const stored = localStorage.getItem('goldBootBets');
-                console.log('Stored in localStorage:', stored);
-
-                goldBootBets = JSON.parse(stored) || [];
-                console.log('Parsed bets:', goldBootBets);
-                console.log('Total bets:', goldBootBets.length);
-
                 if (goldBootBets.length === 0) {
                     console.log('No bets - showing empty message');
                     betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
@@ -1914,7 +1923,6 @@
                 html += '</tr></thead><tbody>';
 
                 goldBootBets.forEach((bet, index) => {
-                    console.log(`Bet ${index}:`, bet);
                     html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
                     html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${bet.name || 'N/A'}</td>`;
                     html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${bet.player || 'N/A'}</td>`;
