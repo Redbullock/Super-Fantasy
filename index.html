@@ -1654,8 +1654,14 @@
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        let database = null;
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            console.log('✅ Firebase initialized successfully');
+        } catch (error) {
+            console.error('❌ Firebase initialization error:', error);
+        }
 
         // Admin Configuration
         const ADMIN_PASSWORD = 'ThambiPower';
@@ -1769,22 +1775,39 @@
 
         // Golden Boot Betting System - Firebase
         let goldBootBets = [];
-        const betsRef = database.ref('goldBootBets');
+        let betsRef = null;
 
-        // Real-time listener for bets
-        betsRef.on('value', function(snapshot) {
-            console.log('Firebase bets updated');
-            const data = snapshot.val();
-            if (data) {
-                goldBootBets = Object.values(data);
-                console.log('Loaded bets from Firebase:', goldBootBets);
-            } else {
-                goldBootBets = [];
+        // Initialize Firebase bets reference
+        if (database) {
+            try {
+                betsRef = database.ref('goldBootBets');
+
+                // Real-time listener for bets
+                betsRef.on('value', function(snapshot) {
+                    console.log('Firebase bets updated');
+                    const data = snapshot.val();
+                    if (data) {
+                        goldBootBets = Object.values(data);
+                        console.log('Loaded bets from Firebase:', goldBootBets);
+                    } else {
+                        goldBootBets = [];
+                    }
+                    loadBets();
+                }, function(error) {
+                    console.error('❌ Error reading from Firebase:', error);
+                });
+
+                console.log('✅ Firebase betting system ready');
+            } catch (error) {
+                console.error('❌ Error setting up Firebase bets:', error);
+                betsRef = null;
             }
+        } else {
+            console.warn('⚠️ Firebase not initialized, using fallback');
+            // Fallback to localStorage
+            goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
             loadBets();
-        }, function(error) {
-            console.error('Error reading from Firebase:', error);
-        });
+        }
 
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
@@ -1842,25 +1865,43 @@
                     timestamp: new Date().toLocaleString()
                 };
 
-                console.log('Saving bet to Firebase:', newBet);
+                console.log('Saving bet:', newBet);
 
-                // Save to Firebase
-                betsRef.push(newBet, function(error) {
-                    if (error) {
-                        console.error('❌ Firebase error:', error);
-                        showBetError('Error saving bet. Please try again.');
-                    } else {
-                        console.log('✅ Bet saved to Firebase!');
+                // Save to Firebase if available, otherwise use localStorage
+                if (betsRef) {
+                    console.log('Using Firebase');
+                    betsRef.push(newBet, function(error) {
+                        if (error) {
+                            console.error('❌ Firebase error:', error);
+                            showBetError('Error saving bet. Please try again.');
+                        } else {
+                            console.log('✅ Bet saved to Firebase!');
 
-                        // Reset form and close modal
-                        resetBetForm();
-                        document.getElementById('betModalBackdrop').style.display = 'none';
-                        document.getElementById('betModal').style.display = 'none';
+                            // Reset form and close modal
+                            resetBetForm();
+                            document.getElementById('betModalBackdrop').style.display = 'none';
+                            document.getElementById('betModal').style.display = 'none';
 
-                        // Show success
-                        showBetSuccess(name + ', your bet is placed! 🎉');
-                    }
-                });
+                            // Show success
+                            showBetSuccess(name + ', your bet is placed! 🎉');
+                        }
+                    });
+                } else {
+                    console.log('Using localStorage fallback');
+                    goldBootBets.push(newBet);
+                    localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+
+                    // Reset form and close modal
+                    resetBetForm();
+                    document.getElementById('betModalBackdrop').style.display = 'none';
+                    document.getElementById('betModal').style.display = 'none';
+
+                    // Refresh display
+                    loadBets();
+
+                    // Show success
+                    showBetSuccess(name + ', your bet is placed! 🎉');
+                }
 
             } catch (error) {
                 console.error('❌ Error placing bet:', error);
