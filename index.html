@@ -1281,8 +1281,9 @@
         </div>
 
         <!-- Bet Modal -->
-        <div id="betModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-            <div style="background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 100%; box-sizing: border-box; max-height: 85vh; overflow-y: auto;">
+        <div id="betModalBackdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998;"></div>
+        <div id="betModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; box-sizing: border-box; max-height: 85vh; overflow-y: auto; z-index: 9999;">
+            <div>
                 <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 24px; font-family: 'Space Grotesk', sans-serif;">Place Your Bet</h2>
 
                 <div style="margin-bottom: 24px;">
@@ -1451,21 +1452,24 @@
         let goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
 
         document.getElementById('placeBetBtn').addEventListener('click', function() {
-            const modal = document.getElementById('betModal');
-            modal.style.display = 'flex';
+            document.getElementById('betModalBackdrop').style.display = 'block';
+            document.getElementById('betModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         });
 
         document.getElementById('closeBetModalBtn').addEventListener('click', function() {
+            document.getElementById('betModalBackdrop').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
             resetBetForm();
         });
 
-        // Close modal when clicking outside
-        document.getElementById('betModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-                resetBetForm();
-            }
+        // Close modal when clicking backdrop
+        document.getElementById('betModalBackdrop').addEventListener('click', function() {
+            this.style.display = 'none';
+            document.getElementById('betModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            resetBetForm();
         });
 
         document.getElementById('confirmBetBtn').addEventListener('click', function() {
@@ -1501,7 +1505,9 @@
 
             // Reset form and close modal
             resetBetForm();
+            document.getElementById('betModalBackdrop').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
 
             // Refresh display
             loadBets();
