@@ -144,6 +144,137 @@
             letter-spacing: 0.05em;
         }
 
+        /* Live Score Display */
+        .live-score-container {
+            background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(0,208,132,0.08) 100%);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 40px 0 40px 0;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-score-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(0,212,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .live-score-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .match-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00d084;
+            animation: pulse 2s infinite;
+        }
+
+        .status-badge.starting {
+            background: #ffc107;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .countdown-timer {
+            font-size: 16px;
+            color: #00d4ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            background: rgba(0,212,255,0.1);
+            padding: 4px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .match-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        .team-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-flag {
+            font-size: 56px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .team-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .team-stake {
+            font-size: 13px;
+            color: #00d4ff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .score-number {
+            font-size: 64px;
+            font-weight: 800;
+            color: #00d4ff;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .score-separator {
+            font-size: 32px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .match-info-footer {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,212,255,0.1);
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
@@ -798,6 +929,35 @@
             .leaderboard-amount {
                 font-size: 13px;
             }
+
+            /* Live Score Display - Tablet */
+            .live-score-container {
+                padding: 20px;
+                margin: 30px 0 30px 0;
+            }
+
+            .match-display {
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .team-flag {
+                font-size: 42px;
+                margin-bottom: 8px;
+            }
+
+            .team-name {
+                font-size: 16px;
+            }
+
+            .score-number {
+                font-size: 48px;
+                min-width: 60px;
+            }
+
+            .score-separator {
+                font-size: 24px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -887,6 +1047,46 @@
             .leaderboard-amount {
                 font-size: 12px;
             }
+
+            /* Live Score Display - Mobile */
+            .live-score-container {
+                padding: 16px;
+                margin: 24px 0 24px 0;
+            }
+
+            .match-display {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .team-flag {
+                font-size: 36px;
+            }
+
+            .team-name {
+                font-size: 14px;
+            }
+
+            .score-display {
+                gap: 16px;
+            }
+
+            .score-number {
+                font-size: 40px;
+                min-width: 50px;
+            }
+
+            .score-separator {
+                font-size: 20px;
+            }
+
+            .match-status {
+                font-size: 12px;
+            }
+
+            .countdown-timer {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -925,9 +1125,9 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button onclick="sendSlackMessage('🔴 GOAL! ⚽ Spain scored!', 'Spain')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Spain Scored</button>
-            <button onclick="sendSlackMessage('🔴 GOAL! ⚽ Argentina scored!', 'Argentina')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Argentina Scored</button>
-            <button onclick="sendSlackMessage('✅ MATCH ENDED! Final score updated!', 'Match End')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">✅ Match Ended</button>
+            <button onclick="scoreSpain(); sendSlackMessage('🔴 GOAL! ⚽ Spain scored! Current score: ' + matchScore.argentina + ' - ' + matchScore.spain, 'Spain')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Spain Scored</button>
+            <button onclick="scoreArgentina(); sendSlackMessage('🔴 GOAL! ⚽ Argentina scored! Current score: ' + matchScore.argentina + ' - ' + matchScore.spain, 'Argentina')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Argentina Scored</button>
+            <button onclick="endMatch(); sendSlackMessage('✅ MATCH ENDED! Final score: ' + matchScore.argentina + ' - ' + matchScore.spain, 'Match End')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">✅ Match Ended</button>
             <button onclick="sendSlackMessage('📊 P&L Updated! Check leaderboard for latest standings', 'Update')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">📊 Update P&L</button>
         </div>
     </div>
@@ -962,6 +1162,41 @@
                 <div class="stat-label">Biggest Loss</div>
                 <div class="stat-value stat-negative">Abhijeet</div>
                 <div style="font-size: 14px; color: #ff3b30; margin-top: 8px;">-2,295.77</div>
+            </div>
+        </div>
+
+        <!-- Live Score Display -->
+        <div class="live-score-container">
+            <div class="live-score-content">
+                <div class="match-status">
+                    <div class="status-badge starting"></div>
+                    <span id="matchStatusText">STARTING SOON</span>
+                    <div class="countdown-timer" id="countdownTimer">12:30 AM</div>
+                </div>
+
+                <div class="match-display">
+                    <div class="team-section">
+                        <span class="team-flag">🇦🇷</span>
+                        <div class="team-name">Argentina</div>
+                        <div class="team-stake">₹2,000 × 3 = ₹6,000</div>
+                    </div>
+
+                    <div class="score-display">
+                        <div class="score-number" id="argentinaScore">0</div>
+                        <div class="score-separator">-</div>
+                        <div class="score-number" id="spainScore">0</div>
+                    </div>
+
+                    <div class="team-section">
+                        <span class="team-flag">🇪🇸</span>
+                        <div class="team-name">Spain</div>
+                        <div class="team-stake">₹2,000 × 5 = ₹10,000</div>
+                    </div>
+                </div>
+
+                <div class="match-info-footer">
+                    Copa América Final • Match Status: <span id="matchStatusFooter">Starting Soon</span>
+                </div>
             </div>
         </div>
 
@@ -1663,6 +1898,14 @@
         let isAdminLoggedIn = false;
         let adminSessionToken = null;
 
+        // Live Score Configuration
+        let matchScore = {
+            argentina: 0,
+            spain: 0,
+            status: 'starting', // 'starting', 'live', 'final'
+            matchTime: new Date().setHours(0, 30, 0, 0) // 12:30 AM today
+        };
+
         // === UTILITY FUNCTIONS ===
 
         /**
@@ -1748,6 +1991,111 @@
             } catch (error) {
                 console.error('Notification error:', error);
             }
+        }
+
+        /**
+         * Updates live score display with animation
+         */
+        function updateLiveScore() {
+            const argScore = document.getElementById('argentinaScore');
+            const spainScoreEl = document.getElementById('spainScore');
+            const statusText = document.getElementById('matchStatusText');
+            const statusFooter = document.getElementById('matchStatusFooter');
+            const statusBadge = document.querySelector('.status-badge');
+
+            if (argScore) argScore.textContent = matchScore.argentina;
+            if (spainScoreEl) spainScoreEl.textContent = matchScore.spain;
+
+            // Update match status
+            const statusMap = {
+                'starting': 'STARTING SOON',
+                'live': 'LIVE',
+                'final': 'MATCH ENDED'
+            };
+
+            if (statusText) statusText.textContent = statusMap[matchScore.status];
+            if (statusFooter) statusFooter.textContent = statusMap[matchScore.status].toLowerCase();
+
+            // Update badge animation
+            if (statusBadge) {
+                statusBadge.classList.remove('starting');
+                if (matchScore.status === 'starting') {
+                    statusBadge.classList.add('starting');
+                }
+            }
+
+            // Add pulse effect on score update
+            [argScore, spainScoreEl].forEach(el => {
+                if (el) {
+                    el.style.animation = 'pulse 0.6s ease-out';
+                    setTimeout(() => {
+                        el.style.animation = '';
+                    }, 600);
+                }
+            });
+        }
+
+        /**
+         * Handles Argentina score update
+         */
+        function scoreArgentina() {
+            matchScore.argentina++;
+            matchScore.status = 'live';
+            updateLiveScore();
+        }
+
+        /**
+         * Handles Spain score update
+         */
+        function scoreSpain() {
+            matchScore.spain++;
+            matchScore.status = 'live';
+            updateLiveScore();
+        }
+
+        /**
+         * Handles match end
+         */
+        function endMatch() {
+            matchScore.status = 'final';
+            updateLiveScore();
+        }
+
+        /**
+         * Starts countdown timer to match time (12:30 AM IST)
+         */
+        function startCountdown() {
+            setInterval(() => {
+                // Get current UTC time and convert to IST (UTC+5:30)
+                const now = new Date();
+                const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
+
+                // Create next 12:30 AM IST
+                const nextMatch = new Date(istTime);
+                nextMatch.setHours(0, 30, 0, 0);
+
+                // If 12:30 AM has already passed today, set for tomorrow
+                if (istTime > nextMatch) {
+                    nextMatch.setDate(nextMatch.getDate() + 1);
+                }
+
+                // Calculate difference (convert IST back to UTC for calculation)
+                const matchTimeUTC = new Date(nextMatch.getTime() - (5.5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60 * 1000));
+                const diff = matchTimeUTC - now;
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const timerEl = document.getElementById('countdownTimer');
+                if (timerEl && diff > 0) {
+                    timerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                } else if (timerEl) {
+                    timerEl.textContent = '00:00:00';
+                    matchScore.status = 'live';
+                    updateLiveScore();
+                }
+            }, 1000);
         }
 
         /**
@@ -1966,6 +2314,12 @@
 
             // Load bets on page load
             loadBetsFromFirebase();
+
+            // Start countdown timer for match
+            startCountdown();
+
+            // Initialize live score display
+            updateLiveScore();
         });
 
         // Refresh bets every 3 seconds for real-time updates
