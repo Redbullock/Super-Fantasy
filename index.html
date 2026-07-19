@@ -1863,33 +1863,53 @@
         }
 
         function loadBets() {
+            console.log('loadBets() called');
+
             const betsList = document.getElementById('betsList');
 
-            // Reload from localStorage to ensure fresh data
-            goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
-
-            if (goldBootBets.length === 0) {
-                betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
+            if (!betsList) {
+                console.error('❌ betsList element not found!');
                 return;
             }
 
-            let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
-            html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
-            html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
-            html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
-            html += '<th style="padding: 12px 8px; text-align: right; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
-            html += '</tr></thead><tbody>';
+            try {
+                // Reload from localStorage to ensure fresh data
+                const stored = localStorage.getItem('goldBootBets');
+                console.log('Stored in localStorage:', stored);
 
-            goldBootBets.forEach((bet, index) => {
-                html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
-                html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${bet.name}</td>`;
-                html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${bet.player}</td>`;
-                html += `<td style="padding: 10px 8px; color: #00d084; font-weight: 700; font-size: 13px; text-align: right;">₹${bet.amount}</td>`;
-                html += `</tr>`;
-            });
+                goldBootBets = JSON.parse(stored) || [];
+                console.log('Parsed bets:', goldBootBets);
+                console.log('Total bets:', goldBootBets.length);
 
-            html += '</tbody></table>';
-            betsList.innerHTML = html;
+                if (goldBootBets.length === 0) {
+                    console.log('No bets - showing empty message');
+                    betsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888888; font-size: 13px;">No bets placed yet. Be the first!</div>';
+                    return;
+                }
+
+                let html = '<table style="width: 100%; border-collapse: collapse; font-family: \'Inter\', sans-serif;">';
+                html += '<thead><tr style="background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">';
+                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Name</th>';
+                html += '<th style="padding: 12px 8px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Player</th>';
+                html += '<th style="padding: 12px 8px; text-align: right; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #00d4ff;">Amount</th>';
+                html += '</tr></thead><tbody>';
+
+                goldBootBets.forEach((bet, index) => {
+                    console.log(`Bet ${index}:`, bet);
+                    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
+                    html += `<td style="padding: 10px 8px; color: #ffffff; font-size: 13px;">${bet.name || 'N/A'}</td>`;
+                    html += `<td style="padding: 10px 8px; color: #00d4ff; font-weight: 600; font-size: 12px;">${bet.player || 'N/A'}</td>`;
+                    html += `<td style="padding: 10px 8px; color: #00d084; font-weight: 700; font-size: 13px; text-align: right;">₹${bet.amount || 0}</td>`;
+                    html += `</tr>`;
+                });
+
+                html += '</tbody></table>';
+                betsList.innerHTML = html;
+                console.log('✅ Bets displayed successfully');
+            } catch (error) {
+                console.error('❌ Error in loadBets:', error);
+                betsList.innerHTML = '<div style="padding: 20px; color: #ff3b30;">Error loading bets. Please refresh the page.</div>';
+            }
         }
     </script>
 </body>
