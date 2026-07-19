@@ -2062,28 +2062,20 @@
         }
 
         /**
-         * Starts countdown timer to match time (12:20 AM IST)
+         * Starts countdown timer to match time (12:20 AM local time)
          */
         function startCountdown() {
             setInterval(() => {
-                // Get current time in IST
                 const now = new Date();
-                // IST is UTC+5:30, so we calculate offset from user's timezone
-                const istOffset = (5.5 * 60) - now.getTimezoneOffset();
-                const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
+                const nextMatch = new Date();
+                nextMatch.setHours(0, 20, 0, 0); // 12:20 AM
 
-                // Create next 12:20 AM IST
-                const nextMatch = new Date(istTime);
-                nextMatch.setHours(0, 20, 0, 0);
-
-                // If 12:20 AM has already passed, set for tomorrow
-                if (istTime > nextMatch) {
+                // If 12:20 AM has already passed today, set for tomorrow
+                if (now > nextMatch) {
                     nextMatch.setDate(nextMatch.getDate() + 1);
                 }
 
-                // Calculate difference back to UTC for comparison with now
-                const diff = nextMatch.getTime() - istTime.getTime();
-
+                const diff = nextMatch - now;
                 const hours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
