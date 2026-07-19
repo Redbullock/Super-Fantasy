@@ -601,6 +601,34 @@
                 </div>
             </div>
             <div class="tagline">Elite Football Betting Pool • Live Standings</div>
+            <button id="adminToggle" style="position: absolute; bottom: 20px; right: 20px; background: rgba(0,212,255,0.2); border: 1px solid rgba(0,212,255,0.4); color: #00d4ff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 12px;">🔐 Admin</button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 40px; min-width: 350px;">
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; color: #00d4ff;">Admin Login</h2>
+            <input type="password" id="adminPassword" placeholder="Enter password" style="width: 100%; padding: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,212,255,0.2); border-radius: 8px; color: #fff; font-size: 14px;">
+            <div style="display: flex; gap: 12px;">
+                <button id="adminLogin" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Login</button>
+                <button id="adminCancel" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" style="display: none; position: fixed; top: 80px; right: 20px; background: linear-gradient(135deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(0,212,255,0.3); border-radius: 12px; padding: 20px; min-width: 300px; z-index: 9998; max-height: 80vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #00d4ff;">Live Match Controls</h3>
+            <button id="adminLogout" style="background: none; border: none; color: #00d4ff; cursor: pointer; font-size: 20px;">✕</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="sendSlackMessage('🔴 GOAL! ⚽ Spain scored!', 'Spain')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Spain Scored</button>
+            <button onclick="sendSlackMessage('🔴 GOAL! ⚽ Argentina scored!', 'Argentina')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">⚽ Argentina Scored</button>
+            <button onclick="sendSlackMessage('✅ MATCH ENDED! Final score updated!', 'Match End')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">✅ Match Ended</button>
+            <button onclick="sendSlackMessage('📊 P&L Updated! Check leaderboard for latest standings', 'Update')" style="padding: 10px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: 600;">📊 Update P&L</button>
         </div>
     </div>
 
@@ -1220,6 +1248,86 @@
     </div>
 
     <script>
+        // Admin Configuration
+        const ADMIN_PASSWORD = 'ThambiPower';
+        const SLACK_WEBHOOK = 'https://hooks.slack.com/services/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';
+        let isAdminLoggedIn = false;
+
+        // Admin Login Handler
+        document.getElementById('adminToggle').addEventListener('click', function() {
+            document.getElementById('adminModal').style.display = 'flex';
+        });
+
+        document.getElementById('adminCancel').addEventListener('click', function() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        });
+
+        document.getElementById('adminLogin').addEventListener('click', function() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminModal').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+                alert('✅ Admin access granted!');
+            } else {
+                alert('❌ Incorrect password!');
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+
+        document.getElementById('adminLogout').addEventListener('click', function() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            alert('👋 Logged out!');
+        });
+
+        // Allow Enter key to submit password
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('adminLogin').click();
+            }
+        });
+
+        // Slack Integration
+        async function sendSlackMessage(message, action) {
+            if (!isAdminLoggedIn) {
+                alert('Please login first!');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleTimeString();
+            const slackMessage = {
+                text: `⚽ SUPER FANTASY - Live Update`,
+                blocks: [
+                    {
+                        type: "section",
+                        text: {
+                            type: "mrkdwn",
+                            text: `🔔 *MATCH UPDATE*\n${message}\n_${timestamp}_`
+                        }
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch(SLACK_WEBHOOK, {
+                    method: 'POST',
+                    body: JSON.stringify(slackMessage)
+                });
+
+                if (response.ok) {
+                    alert('✅ Slack message sent!');
+                } else {
+                    alert('❌ Failed to send message');
+                }
+            } catch (error) {
+                console.error('Slack error:', error);
+                alert('❌ Error sending to Slack');
+            }
+        }
+
         function toggleMatch(header) {
             const matchCard = header.closest('.match-card');
             const content = matchCard.querySelector('.match-content');
