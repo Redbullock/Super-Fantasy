@@ -588,6 +588,279 @@
         .stat-card {
             animation: fadeIn 0.5s ease forwards;
         }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 0 12px;
+            }
+
+            .header {
+                padding: 40px 0;
+            }
+
+            .brand-container {
+                gap: 12px;
+                align-items: center;
+            }
+
+            .brand-box {
+                width: 50px;
+                height: 50px;
+                border-radius: 8px;
+            }
+
+            .brand-box .football-emoji {
+                font-size: 28px;
+            }
+
+            .brand-text h1 {
+                font-size: 22px;
+                line-height: 1.2;
+                margin-bottom: 0;
+            }
+
+            /* Stats Grid */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin: 30px 0;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+                margin: 8px 0;
+            }
+
+            /* Section Headers */
+            .section-header {
+                font-size: 18px;
+                margin: 30px 0 20px 0;
+                padding-bottom: 12px;
+            }
+
+            /* Tables - Make responsive */
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 10px 8px;
+            }
+
+            /* Golden Boot Cards */
+            .golden-boot-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .golden-boot-card {
+                padding: 20px;
+            }
+
+            .golden-boot-card img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .golden-boot-card h3 {
+                font-size: 18px;
+            }
+
+            .golden-boot-goals {
+                font-size: 36px;
+            }
+
+            /* Place Bet Button */
+            #placeBetBtn {
+                width: 100%;
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            /* Betting Modal */
+            #betModal {
+                width: 95vw;
+                max-width: 95vw;
+                padding: 16px;
+            }
+
+            #betModal > div {
+                padding: 20px;
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #betModal h2 {
+                font-size: 18px;
+                margin-bottom: 16px;
+            }
+
+            #betModal input,
+            #betModal label {
+                font-size: 13px;
+            }
+
+            .bet-player-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .bet-player-options label {
+                padding: 10px;
+            }
+
+            .bet-amount-options {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .bet-amount-options label {
+                flex: 1 1 calc(33.333% - 6px);
+                min-width: 70px;
+            }
+
+            #betModal button {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            /* Match Cards */
+            .match-card {
+                margin-bottom: 16px;
+            }
+
+            .match-header {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .match-header h3 {
+                font-size: 16px;
+            }
+
+            .match-content {
+                padding: 16px;
+            }
+
+            .match-content table {
+                font-size: 11px;
+            }
+
+            /* Leaderboard */
+            .leaderboard-container {
+                gap: 8px;
+            }
+
+            .leaderboard-item {
+                padding: 12px;
+            }
+
+            .leaderboard-rank {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+
+            .leaderboard-name {
+                font-size: 13px;
+            }
+
+            .leaderboard-amount {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container-fluid {
+                padding: 0 10px;
+            }
+
+            .header {
+                padding: 30px 0;
+            }
+
+            .brand-box {
+                width: 45px;
+                height: 45px;
+            }
+
+            .brand-text h1 {
+                font-size: 20px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .section-header {
+                font-size: 16px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            table th, table td {
+                padding: 8px 6px;
+            }
+
+            .golden-boot-card {
+                padding: 16px;
+            }
+
+            .golden-boot-card img {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 12px;
+            }
+
+            .golden-boot-card h3 {
+                font-size: 16px;
+            }
+
+            .golden-boot-goals {
+                font-size: 32px;
+                margin: 16px 0;
+            }
+
+            #betModal {
+                width: 98vw;
+            }
+
+            #betModal > div {
+                padding: 16px;
+                max-height: 80vh;
+            }
+
+            #betModal h2 {
+                font-size: 16px;
+            }
+
+            .leaderboard-rank {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .leaderboard-name,
+            .leaderboard-amount {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1244,22 +1517,22 @@
         <div style="margin-top: 80px;">
             <h2 style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid rgba(0,212,255,0.3); color: #ffffff; font-family: 'Space Grotesk', sans-serif;">🥾 Golden Boot Race</h2>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="golden-boot-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                 <!-- Mbappé Card -->
-                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
+                <div class="golden-boot-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Kylian_Mbappé_-_2023.jpg/220px-Kylian_Mbappé_-_2023.jpg" alt="Mbappé" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid rgba(0,212,255,0.3);">
                     <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif;">Kylian Mbappé</h3>
                     <div style="font-size: 13px; color: #00d4ff; margin-bottom: 16px;">🇫🇷 France</div>
-                    <div style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">10</div>
+                    <div class="golden-boot-goals" style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">10</div>
                     <div style="font-size: 13px; color: #888888; text-transform: uppercase; letter-spacing: 0.05em;">Goals</div>
                 </div>
 
                 <!-- Messi Card -->
-                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
+                <div class="golden-boot-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 32px; text-align: center;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Lionel_Messi_2018.jpg/220px-Lionel_Messi_2018.jpg" alt="Messi" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid rgba(0,212,255,0.3);">
                     <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif;">Lionel Messi</h3>
                     <div style="font-size: 13px; color: #00d4ff; margin-bottom: 16px;">🇦🇷 Argentina</div>
-                    <div style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">8</div>
+                    <div class="golden-boot-goals" style="font-size: 48px; color: #00d084; font-weight: 800; margin: 24px 0; font-family: 'Space Grotesk', sans-serif;">8</div>
                     <div style="font-size: 13px; color: #888888; text-transform: uppercase; letter-spacing: 0.05em;">Goals</div>
                 </div>
             </div>
