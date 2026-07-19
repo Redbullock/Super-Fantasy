@@ -22,6 +22,7 @@
             -moz-osx-font-smoothing: grayscale;
             min-height: 100vh;
             position: relative;
+            overflow-x: hidden;
         }
 
         body::before {
@@ -587,6 +588,19 @@
         .leaderboard-wrapper,
         .stat-card {
             animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Overall Standings - Hide Match columns on mobile */
+        @media (max-width: 768px) {
+            /* Hide Match 1, Match 2, Match 3 columns */
+            table th:nth-child(2),
+            table th:nth-child(3),
+            table th:nth-child(4),
+            table td:nth-child(2),
+            table td:nth-child(3),
+            table td:nth-child(4) {
+                display: none;
+            }
         }
 
         /* Mobile Optimizations */
