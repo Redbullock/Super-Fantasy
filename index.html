@@ -1772,46 +1772,89 @@
         });
 
         document.getElementById('confirmBetBtn').addEventListener('click', function() {
+            console.log('Place bet button clicked');
+
             const player = document.querySelector('input[name="betPlayer"]:checked')?.value;
             const name = document.getElementById('betName').value.trim();
             const amount = document.querySelector('input[name="betAmount"]:checked')?.value;
 
+            console.log('Form data:', { player, name, amount });
+
             if (!player) {
-                alert('Please select a player (Mbappé or Messi)');
+                console.log('❌ No player selected');
+                showBetError('Please select a player (Mbappé or Messi)');
                 return;
             }
 
             if (!name) {
-                alert('Please enter your name');
+                console.log('❌ No name entered');
+                showBetError('Please enter your name');
                 return;
             }
 
             if (!amount) {
-                alert('Please select an amount');
+                console.log('❌ No amount selected');
+                showBetError('Please select an amount');
                 return;
             }
 
-            // Add bet
-            goldBootBets.push({
-                name: name,
-                player: player === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
-                amount: parseInt(amount),
-                timestamp: new Date().toLocaleString()
-            });
+            try {
+                // Add bet
+                const newBet = {
+                    name: name,
+                    player: player === 'mbappe' ? '🇫🇷 Mbappé' : '🇦🇷 Messi',
+                    amount: parseInt(amount),
+                    timestamp: new Date().toLocaleString()
+                };
 
-            // Save to localStorage
-            localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+                goldBootBets.push(newBet);
+                console.log('Bet added to array:', newBet);
+                console.log('Total bets:', goldBootBets);
 
-            // Reset form and close modal
-            resetBetForm();
-            document.getElementById('betModalBackdrop').style.display = 'none';
-            document.getElementById('betModal').style.display = 'none';
+                // Save to localStorage
+                localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+                console.log('✅ Saved to localStorage');
 
-            // Refresh display
-            loadBets();
+                // Reset form and close modal
+                resetBetForm();
+                document.getElementById('betModalBackdrop').style.display = 'none';
+                document.getElementById('betModal').style.display = 'none';
 
-            console.log('✅ Bet placed!');
+                // Refresh display
+                loadBets();
+
+                console.log('✅ Bet placed successfully!');
+                showBetSuccess(name + ', your bet is placed! 🎉');
+
+            } catch (error) {
+                console.error('❌ Error placing bet:', error);
+                showBetError('Error placing bet. Please try again.');
+            }
         });
+
+        function showBetError(message) {
+            console.log('Error message:', message);
+            // Show error in console
+            console.error(message);
+            // Also try alert as fallback
+            try {
+                alert(message);
+            } catch (e) {
+                console.log('Alert blocked');
+            }
+        }
+
+        function showBetSuccess(message) {
+            console.log('Success message:', message);
+            // Show success in console
+            console.log(message);
+            // Also try alert as fallback
+            try {
+                alert(message);
+            } catch (e) {
+                console.log('Alert blocked');
+            }
+        }
 
         function resetBetForm() {
             document.getElementById('betName').value = '';
