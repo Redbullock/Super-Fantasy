@@ -6,9 +6,6 @@
     <title>SUPER FANTASY - Football Betting Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
-    <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-compat-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-compat-database.js"></script>
     <style>
         * {
             margin: 0;
@@ -1642,26 +1639,8 @@
 
     <script>
         // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDnP84_l2GS3Rk2_jTIPdqK76vPg2ZQelQ",
-            authDomain: "super-fantasy-97d0f.firebaseapp.com",
-            databaseURL: "https://super-fantasy-97d0f-default-rtdb.firebaseio.com",
-            projectId: "super-fantasy-97d0f",
-            storageBucket: "super-fantasy-97d0f.firebasestorage.app",
-            messagingSenderId: "574785696022",
-            appId: "1:574785696022:web:02569e0b5fc6fc77ca6037",
-            measurementId: "G-NWQDM1PQVH"
-        };
-
-        // Initialize Firebase
-        let database = null;
-        try {
-            const app = firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            console.log('✅ Firebase initialized successfully');
-        } catch (error) {
-            console.error('❌ Firebase initialization error:', error);
-        }
+        const FIREBASE_DB_URL = "https://super-fantasy-97d0f-default-rtdb.firebaseio.com";
+        const BETS_URL = FIREBASE_DB_URL + "/goldBootBets.json";
 
         // Admin Configuration
         const ADMIN_PASSWORD = 'ThambiPower';
@@ -1773,41 +1752,42 @@
             loadBets();
         });
 
-        // Golden Boot Betting System - Firebase
+        // Golden Boot Betting System - Firebase REST API
         let goldBootBets = [];
-        let betsRef = null;
+        let firebaseAvailable = true;
 
-        // Initialize Firebase bets reference
-        if (database) {
+        // Load bets from Firebase
+        async function loadBetsFromFirebase() {
             try {
-                betsRef = database.ref('goldBootBets');
+                console.log('Loading bets from Firebase...');
+                const response = await fetch(BETS_URL);
 
-                // Real-time listener for bets
-                betsRef.on('value', function(snapshot) {
-                    console.log('Firebase bets updated');
-                    const data = snapshot.val();
+                if (response.ok) {
+                    const data = await response.json();
                     if (data) {
                         goldBootBets = Object.values(data);
-                        console.log('Loaded bets from Firebase:', goldBootBets);
+                        console.log('✅ Loaded bets from Firebase:', goldBootBets);
+                        firebaseAvailable = true;
                     } else {
                         goldBootBets = [];
                     }
-                    loadBets();
-                }, function(error) {
-                    console.error('❌ Error reading from Firebase:', error);
-                });
-
-                console.log('✅ Firebase betting system ready');
+                } else {
+                    console.warn('⚠️ Firebase not available, using localStorage');
+                    firebaseAvailable = false;
+                    goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
+                }
+                loadBets();
             } catch (error) {
-                console.error('❌ Error setting up Firebase bets:', error);
-                betsRef = null;
+                console.warn('⚠️ Firebase error:', error);
+                firebaseAvailable = false;
+                goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
+                loadBets();
             }
-        } else {
-            console.warn('⚠️ Firebase not initialized, using fallback');
-            // Fallback to localStorage
-            goldBootBets = JSON.parse(localStorage.getItem('goldBootBets')) || [];
-            loadBets();
         }
+
+        // Refresh bets every 3 seconds for real-time updates
+        loadBetsFromFirebase();
+        setInterval(loadBetsFromFirebase, 3000);
 
         document.getElementById('placeBetBtn').addEventListener('click', function() {
             document.getElementById('betModalBackdrop').style.display = 'block';
@@ -1867,45 +1847,48 @@
 
                 console.log('Saving bet:', newBet);
 
-                // Save to Firebase if available, otherwise use localStorage
-                if (betsRef) {
-                    console.log('Using Firebase');
-                    betsRef.push(newBet, function(error) {
-                        if (error) {
-                            console.error('❌ Firebase error:', error);
-                            showBetError('Error saving bet. Please try again.');
-                        } else {
+                // Try Firebase first
+                if (firebaseAvailable) {
+                    console.log('Saving to Firebase...');
+                    fetch(BETS_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newBet)
+                    }).then(response => {
+                        if (response.ok) {
                             console.log('✅ Bet saved to Firebase!');
-
-                            // Reset form and close modal
                             resetBetForm();
                             document.getElementById('betModalBackdrop').style.display = 'none';
                             document.getElementById('betModal').style.display = 'none';
-
-                            // Show success
                             showBetSuccess(name + ', your bet is placed! 🎉');
+                            // Refresh bets immediately
+                            setTimeout(loadBetsFromFirebase, 500);
+                        } else {
+                            throw new Error('Firebase save failed');
                         }
+                    }).catch(error => {
+                        console.warn('Firebase failed, falling back to localStorage:', error);
+                        firebaseAvailable = false;
+                        saveBetLocally(newBet, name);
                     });
                 } else {
-                    console.log('Using localStorage fallback');
-                    goldBootBets.push(newBet);
-                    localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
-
-                    // Reset form and close modal
-                    resetBetForm();
-                    document.getElementById('betModalBackdrop').style.display = 'none';
-                    document.getElementById('betModal').style.display = 'none';
-
-                    // Refresh display
-                    loadBets();
-
-                    // Show success
-                    showBetSuccess(name + ', your bet is placed! 🎉');
+                    console.log('Using localStorage');
+                    saveBetLocally(newBet, name);
                 }
 
             } catch (error) {
                 console.error('❌ Error placing bet:', error);
                 showBetError('Error placing bet. Please try again.');
+            }
+
+            function saveBetLocally(newBet, name) {
+                goldBootBets.push(newBet);
+                localStorage.setItem('goldBootBets', JSON.stringify(goldBootBets));
+                resetBetForm();
+                document.getElementById('betModalBackdrop').style.display = 'none';
+                document.getElementById('betModal').style.display = 'none';
+                loadBets();
+                showBetSuccess(name + ', your bet is placed! 🎉');
             }
         });
 
