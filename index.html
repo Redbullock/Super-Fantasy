@@ -1813,17 +1813,10 @@
          */
         async function validateAdminPassword(password) {
             try {
-                // In production, this should call a backend endpoint
-                // const response = await fetch('/api/admin/validate-password', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ password })
-                // });
-                // return response.ok;
-
-                // For now, show this is not implemented
-                console.warn('⚠️ Admin authentication requires backend implementation');
-                return false;
+                // Simple validation - accept known admin password
+                // In production, this should call a backend endpoint with proper hashing
+                const correctPassword = 'ThambiPower';
+                return password === correctPassword;
             } catch (error) {
                 console.error('Authentication error:', error);
                 return false;
