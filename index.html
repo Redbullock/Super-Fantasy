@@ -1068,7 +1068,7 @@
                 </div>
             </div>
             <div class="tagline">Elite Football Betting Pool • Live Standings</div>
-            <button id="adminToggle" style="position: absolute; bottom: 20px; right: 20px; background: rgba(0,212,255,0.2); border: 1px solid rgba(0,212,255,0.4); color: #00d4ff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 12px;">🔐 Admin</button>
+            <button id="adminToggle" style="display: none; position: absolute; bottom: 20px; right: 20px; background: rgba(0,212,255,0.2); border: 1px solid rgba(0,212,255,0.4); color: #00d4ff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 12px;">🔐 Admin</button>
         </div>
     </div>
 
@@ -1137,7 +1137,7 @@
             <div class="live-score-content">
                 <div class="match-status">
                     <div class="status-badge"></div>
-                    <span id="matchStatusText">MATCH ENDED</span>
+                    <span id="matchStatusText">MATCH OVER</span>
                     <div class="countdown-timer" id="countdownTimer" style="background: #ff3b30; color: #fff;">✅ FINAL: Spain 1 - 0 Argentina</div>
                 </div>
 
@@ -1162,9 +1162,18 @@
                 </div>
 
                 <div class="match-info-footer">
-                    FIFA World Cup 2026 • Match Status: <span id="matchStatusFooter">live</span>
+                    FIFA World Cup 2026 • Match Status: <span id="matchStatusFooter">match over</span>
                 </div>
             </div>
+        </div>
+
+        <!-- Big Loser Message -->
+        <div style="margin: 60px 0; padding: 60px 40px; text-align: center; background: linear-gradient(135deg, rgba(255,59,48,0.15) 0%, rgba(255,59,48,0.08) 100%); border: 2px solid rgba(255,59,48,0.5); border-radius: 24px; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-size: 120px; opacity: 0.1;">😭</div>
+            <h2 style="font-size: 56px; font-weight: 800; color: #ff3b30; margin-bottom: 20px; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; text-transform: uppercase;">SURO</h2>
+            <p style="font-size: 32px; font-weight: 700; color: #ff6b63; margin-bottom: 12px;">BIGGEST LOSER</p>
+            <p style="font-size: 18px; color: #ff9999; margin: 20px 0;">Final Balance: -3,295.77 ₹</p>
+            <p style="font-size: 14px; color: rgba(255,59,48,0.7); margin-top: 24px;">Better luck next time! 🎲💔</p>
         </div>
 
         <!-- Overall Standings - MOVED TO TOP -->
